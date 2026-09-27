@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-最简版单条音频推理脚本。
-
-你只需要改 4 个地方：
-1. MODEL_MODULE：你的模型文件 import 路径
-2. CHECKPOINT_PATH：训练好的 ckpt 路径
-3. MIXTURE_PATH：混合音频路径
-4. REFERENCE_PATH：注册/reference 音频路径
-5. OUT_PATH：保存路径
-
-运行：
-python infer_single_tse_simple.py
-"""
 
 import sys
 import importlib
@@ -24,22 +8,15 @@ import torchaudio
 import os
 
 
-# =========================
-# 1. 按你的工程修改这里
-# =========================
 PROJECT_ROOT = "/home/xueke/real_tse_challenge"
 
-# 例如模型文件是 /root/real_tse/dcfnet_plus/model/mugi_v2_multi.py
-# 那这里写 "model.mugi_v2_multi"
+# /root/real_tse/dcfnet_plus/model/mugi_v2_multi.py
+# "model.mugi_v2_multi"
 MODEL_MODULE = "model.hybrid_mixer_v2_local_global"
 
-# 模型类名
+# class name
 MODEL_CLASS = "OnlineTargetSpeakerExtractionModel"
 
-# ,/home/xueke/dataset/librispeech/libri_2mix_16k/Libri2Mix/wav16k/min/dev/s1/1993-147149-0004_5694-64029-0022.wav,/home/xueke/dataset/librispeech/libri_2mix_16k/Libri2Mix/wav16k/min/dev/s2/1993-147149-0004_5694-64029-0022.wav,/home/xueke/dataset/librispeech/libri_2mix_16k/Libri2Mix/wav16k/min/dev/noise/1993-147149-0004_5694-64029-0022.wav,78400,1,/home/xueke/dataset/librispeech/libri_2mix_16k/Libri2Mix/wav16k/min/dev/s1/1993-147149-0004_5694-64029-0022.wav,1993,1993-147149-0004,147149,1,/home/xueke/dataset/librispeech/libri_2mix_16k/Libri2Mix/wav16k/min/dev/s1_reference_1/1993-147149-0004_5694-64029-0022_1993-147966-0004.wav
-# =========================
-# 2. 修改你的输入输出路径
-# =========================
 CHECKPOINT_PATH = "/home/xueke/real_tse_challenge/checkpoint_real_t_local_global_online_speaker_2-4/best-epochepoch=002-valsisdrval_sisdr=6.0961.ckpt"
 
 MIXTURE_PATH = "/home/xueke/dataset/slurp/omni_tse_benchmark_audio/dev/dev_010000/mixture.wav"
@@ -47,14 +24,8 @@ REFERENCE_PATH = "/home/xueke/dataset/slurp/omni_tse_benchmark_audio/dev/dev_010
 
 OUT_PATH = "/home/xueke/real_tse_challenge/infer_outputs/est.wav"
 
-
-# =========================
-# 3. 基本参数
-# =========================
 SAMPLE_RATE = 16000
 DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
-# 训练时 aux_len 如果是 4 秒，这里就保持 4 秒。
-# 如果想用完整 reference，把 REF_SECONDS 改成 None。
 REF_SECONDS = None
 
 
@@ -123,8 +94,6 @@ def load_checkpoint(model, ckpt_path):
 
         if nk.startswith("module."):
             nk = nk[len("module."):]
-
-        # 如果 LightningModule 里是 self.model = mugi_block_multi()
         if nk.startswith("model."):
             nk = nk[len("model."):]
 
@@ -153,7 +122,6 @@ def save_wav(path, wav, sample_rate=16000):
 
     wav = torch.nan_to_num(wav, nan=0.0, posinf=0.0, neginf=0.0)
 
-    # 防止保存爆音
     peak = wav.abs().max().item()
     if peak > 1.0:
         wav = wav / peak * 0.99
@@ -170,7 +138,6 @@ def main():
 
     device = torch.device(DEVICE)
 
-    # 1. 实例化模型，使用默认参数
     module = importlib.import_module(MODEL_MODULE)
     ModelClass = getattr(module, MODEL_CLASS)
 
@@ -180,7 +147,6 @@ def main():
     model = model.to(device)
     model.eval()
 
-    # 2. 读取音频
     mixture = load_audio_mono(MIXTURE_PATH, SAMPLE_RATE, device)
     reference = load_audio_mono(REFERENCE_PATH, SAMPLE_RATE, device)
 
@@ -196,14 +162,12 @@ def main():
     print("[Input] mixture:", mixture.shape)
     print("[Input] reference:", reference.shape)
 
-    # 3. 推理
     with torch.no_grad():
         with torch.amp.autocast(device_type=device.type, enabled=False):
             est = model(mixture.float(), reference.float(), original_ref_len)
 
     print("[Output] raw:", est.shape)
 
-    # 你的模型通常输出 [B, num_source, T]
     if est.dim() == 3:
         est_wav = est[0, 0]
     elif est.dim() == 2:
@@ -213,7 +177,6 @@ def main():
 
     est_wav = est_wav[:original_len]
 
-    # 4. 保存
     save_wav(OUT_PATH, est_wav, SAMPLE_RATE)
 
 

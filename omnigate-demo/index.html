@@ -1,0 +1,317 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="OmniGATE: streaming target speaker extraction for target-aware omni-modal interaction. Qwen3-Omni audio examples and responses.">
+<title>OmniGATE — Qwen3-Omni Audio Demonstrations</title>
+<style>
+:root{--ink:#172b40;--muted:#526577;--blue:#165db1;--line:#dce4ec;--light:#f5f8fb;--green:#237545;--red:#9c3939;--orange:#a25a11}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif;background:white}
+a{color:var(--blue)}
+button,a,input,select{touch-action:manipulation}
+a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #246dd0;outline-offset:3px}
+main{max-width:1120px;margin:auto;padding:0 24px 60px}
+header{text-align:center;padding:64px 0 36px}
+h1{font-size:clamp(28px,4vw,44px);line-height:1.22;max-width:980px;margin:8px auto 22px;letter-spacing:-1px}
+h1 span{color:var(--blue)}
+h2{font-size:27px;line-height:1.3;margin:0 0 14px}
+h3{font-size:19px;margin:0}
+p{margin:0 0 16px}
+.eyebrow{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);font-weight:700}
+.muted{color:var(--muted)}
+#affiliations{white-space:pre-line;font-size:14px;line-height:1.8}
+.links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
+.link,.pending{padding:8px 18px;border:1px solid var(--line);border-radius:6px;font-size:14px;text-decoration:none}
+.link{background:var(--ink);color:white}.pending{color:var(--muted);background:var(--light)}
+nav{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;border-block:1px solid var(--line);padding:15px 0;font-size:14px}
+nav a{text-decoration:none;font-weight:600}
+section{padding-top:44px;scroll-margin-top:20px}
+.intro{max-width:900px;margin:auto}
+.pipeline{display:flex;align-items:center;justify-content:center;gap:16px;margin:25px 0;background:var(--light);padding:26px;border:1px solid var(--line);border-radius:8px}
+.stage{text-align:center;flex:1}.stage strong{display:block}.stage small{font-size:14px;color:var(--muted)}.arrow{color:var(--blue);font-size:24px}
+.note{background:#f4f7fb;border-left:3px solid var(--blue);padding:12px 16px;color:var(--muted);font-size:14px;margin:20px 0}
+.case{border:1px solid var(--line);border-radius:8px;margin:22px 0;overflow:hidden}
+.casehead{padding:20px;background:var(--light)}
+.case-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.casehead p{margin:8px 0 0}.meta{font-size:14px;color:var(--muted)}
+.example-select{padding:8px 14px;border:1px solid var(--line);border-radius:6px;background:white;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.prompts{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:18px 20px}
+.prompt-label{font-size:14px;font-weight:700;display:block;margin-bottom:2px}
+.prompt-wide{grid-column:1/-1}
+.background-list{margin:4px 0 0;padding-left:20px;color:var(--muted)}
+.enrollment{padding:0 20px 18px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;text-align:left;font-size:14px}
+th{background:var(--light);font-weight:600;color:var(--muted)}
+th,td{padding:14px 18px;border-top:1px solid var(--line);vertical-align:middle}
+td:first-child{font-weight:600;white-space:nowrap}
+audio{display:block;width:245px;max-width:100%;height:38px}
+.response{min-width:260px;max-width:470px}.response p{margin:0 0 8px}.response audio{width:230px;margin-top:8px}
+.missing{color:var(--muted);font-size:14px;display:inline-block}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;background:#edf1f5;color:var(--muted);margin-top:2px}
+.badge.target{color:var(--green);background:#eaf5ee}.badge.interferer{color:var(--red);background:#fceeee}.badge.other{color:var(--orange);background:#fbf2e7}
+.sample-id{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.empty{padding:28px;border:1px dashed var(--line);color:var(--muted);text-align:center;background:var(--light)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--light);padding:22px;font-size:14px}
+footer{margin-top:45px;border-top:1px solid var(--line);padding-top:20px;font-size:14px;color:var(--muted)}
+@media(max-width:650px){main{padding-inline:16px}header{padding-top:36px}nav{gap:12px}section{padding-top:32px}.pipeline{flex-direction:column}.arrow{transform:rotate(90deg)}.prompts{grid-template-columns:1fr}.prompt-wide{grid-column:auto}th,td{padding:12px}.enrollment audio{width:100%}h2{font-size:24px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="eyebrow">Audio demonstrations</div>
+  <h1><span>OmniGATE:</span> A Streaming Target Speaker Extraction Front-End for Omni-Modal Interaction</h1>
+  <p id="authors" class="muted"></p>
+  <p id="affiliations" class="muted"></p>
+  <div id="links" class="links"></div>
+</header>
+
+<nav aria-label="Page sections">
+  <a href="#overview">Overview</a>
+  <a href="#interaction">Qwen3-Omni interaction</a>
+  <a href="#citation">Citation</a>
+</nav>
+
+<section id="overview">
+  <div class="intro">
+    <h2>Following the intended speaker</h2>
+    <p>Competing speakers can issue meaningful but conflicting requests. OmniGATE uses an enrollment utterance to extract the intended user’s speech before passing it to a frozen omni-modal model.</p>
+  </div>
+  <div class="pipeline" aria-label="System overview">
+    <div class="stage"><strong>Multi-speaker audio</strong><small>Mixture + target enrollment</small></div>
+    <span class="arrow" aria-hidden="true">→</span>
+    <div class="stage"><strong>OmniGATE</strong><small>Streaming target extraction</small></div>
+    <span class="arrow" aria-hidden="true">→</span>
+    <div class="stage"><strong>Qwen3-Omni</strong><small>Frozen downstream model</small></div>
+  </div>
+</section>
+
+<section id="interaction">
+  <h2>Target-aware Qwen3-Omni interaction</h2>
+  <p class="muted">Three difficulty levels are shown below. Each level contains two fixed examples. Use the selector to switch between the two examples, then compare the original mixture with OmniGATE-S and OmniGATE-L.</p>
+  <div class="note">The six examples are manually selected challenging cases for qualitative demonstration rather than a summary of aggregate benchmark performance. The “Target component” row is included only as an acoustic reference; no Qwen3-Omni response is shown for that row.</div>
+  <div id="interaction-cases"></div>
+  <p class="meta" id="selection-note"></p>
+</section>
+
+<section id="citation">
+  <h2>Citation</h2>
+  <div id="citation-content"></div>
+</section>
+
+<footer>OmniGATE · Research demonstration</footer>
+</main>
+
+<script>
+const CONFIG = {
+  authors: "Ke Xue¹, Kai Li², Rongfei Fan¹, Han Hu³",
+  affiliations: [
+    "¹ School of Cyberspace Science and Technology, Beijing Institute of Technology, Beijing, China",
+    "² Department of Computer Science and Technology, Institute for AI, BNRist, Tsinghua University, Beijing, China",
+    "³ School of Information and Electronics, Beijing Institute of Technology, Beijing, China"
+  ].join("\n"),
+  links: {Code: "https://github.com/xueke924/OmniGATE", "Pretrained models": "", "OmniTAC-Bench": ""},
+  selectionNote: "Six challenging 3–4 speaker cases with strong overlap, reverberation/noise, and correct OmniGATE-S/OmniGATE-L target-following responses are shown.",
+  interactionCases: [
+    {
+      id: "easy-01",
+      sampleId: "test_001745",
+      title: "Easy example 01",
+      difficulty: "Easy",
+      speakers: 4,
+      sir: 0.82,
+      overlap: 0.9156,
+      rt60: 0.320,
+      noiseSnr: 3.14,
+      targetText: "please book a train ticket from london to manchester",
+      interfererText: "what is the stock information of walmart",
+      backgroundTexts: ["remind me at five pm", "turn this room light off"],
+      enrollment: "assets/qwen_omni/reference/1.wav",
+      conditions: [
+        {name:"Mixture", audio:"assets/qwen_omni/mixture/1.wav", responseAudio:"assets/qwen_omni/omni_response/1_mixture.wav", response:{text:"[unintelligible speech]",label:"other"}},
+        {name:"OmniGATE-S", audio:"assets/qwen_omni/omniget_output_small/1.wav", responseAudio:"assets/qwen_omni/omni_response/1_small.wav", response:{text:"I've booked a train ticket for you from London to Manchester.",label:"target"}},
+        {name:"OmniGATE-L", audio:"assets/qwen_omni/omnigate_output_large/1.wav", responseAudio:"assets/qwen_omni/omni_response/1_large.wav", response:{text:"I've booked a train ticket for you from London to Manchester.",label:"target"}},
+        {name:"Target component", audio:"assets/qwen_omni/target/1.wav", response:null}
+      ]
+    },
+    {
+      id: "easy-02",
+      sampleId: "test_004726",
+      title: "Easy example 02",
+      difficulty: "Easy",
+      speakers: 4,
+      sir: -2.63,
+      overlap: 1.0,
+      rt60: 0.692,
+      noiseSnr: 18.20,
+      targetText: "add a meeting with francine for two pm tomorrow",
+      interfererText: "is there any new unread yahoo email",
+      backgroundTexts: ["play firefly by mura masa", "can you create a new list in the playlist"],
+      enrollment: "assets/qwen_omni/reference/2.wav",
+      conditions: [
+        {name:"Mixture", audio:"assets/qwen_omni/mixture/2.wav", responseAudio:"assets/qwen_omni/omni_response/2_mixture.wav", response:{text:"[unintelligible speech]",label:"other"}},
+        {name:"OmniGATE-S", audio:"assets/qwen_omni/omniget_output_small/2.wav", responseAudio:"assets/qwen_omni/omni_response/2_small.wav", response:{text:"Okay, I've added a meeting with Francine for 2:00 PM tomorrow.",label:"target"}},
+        {name:"OmniGATE-L", audio:"assets/qwen_omni/omnigate_output_large/2.wav", responseAudio:"assets/qwen_omni/omni_response/2_large.wav", response:{text:"Okay, I've added a meeting with Francine for 2:00 PM tomorrow.",label:"target"}},
+        {name:"Target component", audio:"assets/qwen_omni/target/2.wav", response:null}
+      ]
+    },
+    {
+      id: "hard-01",
+      sampleId: "test_004695",
+      title: "Hard example 01",
+      difficulty: "Hard",
+      speakers: 3,
+      sir: 7.55,
+      overlap: 1.0,
+      rt60: 0.426,
+      noiseSnr: -2.76,
+      targetText: "do i have meeting with steve this week",
+      interfererText: "give me the time of the events",
+      backgroundTexts: ["please let me know what time seven pm is in pst"],
+      enrollment: "assets/qwen_omni/reference/3.wav",
+      conditions: [
+        {name:"Mixture", audio:"assets/qwen_omni/mixture/3.wav", responseAudio:"assets/qwen_omni/omni_response/3_mixture.wav", response:{text:"[unintelligible speech]",label:"other"}},
+        {name:"OmniGATE-S", audio:"assets/qwen_omni/omniget_output_small/3.wav", responseAudio:"assets/qwen_omni/omni_response/3_small.wav", response:{text:"Yes, I have a meeting with Steve this week.",label:"target"}},
+        {name:"OmniGATE-L", audio:"assets/qwen_omni/omnigate_output_large/3.wav", responseAudio:"assets/qwen_omni/omni_response/3_large.wav", response:{text:"Yes, I have a meeting with Steve this week.",label:"target"}},
+        {name:"Target component", audio:"assets/qwen_omni/target/3.wav", response:null}
+      ]
+    },
+    {
+      id: "hard-02",
+      sampleId: "test_004157",
+      title: "Hard example 02",
+      difficulty: "Hard",
+      speakers: 3,
+      sir: -1.59,
+      overlap: 1.0,
+      rt60: 0.541,
+      noiseSnr: 13.02,
+      targetText: "what time can i catch the train to dc and arrive by nine am",
+      interfererText: "please list the available train trips to location a",
+      backgroundTexts: ["what has been the best selling product on sports category in amazon for the last three days"],
+      enrollment: "assets/qwen_omni/reference/4.wav",
+      conditions: [
+        {name:"Mixture", audio:"assets/qwen_omni/mixture/4.wav", responseAudio:"assets/qwen_omni/omni_response/4_mixture.wav", response:{text:"[unintelligible speech]",label:"other"}},
+        {name:"OmniGATE-S", audio:"assets/qwen_omni/omniget_output_small/4.wav", responseAudio:"assets/qwen_omni/omni_response/4_small.wav", response:{text:"To arrive at 9:00 AM, you should catch the 8:00 AM train.",label:"target"}},
+        {name:"OmniGATE-L", audio:"assets/qwen_omni/omnigate_output_large/4.wav", responseAudio:"assets/qwen_omni/omni_response/4_large.wav", response:{text:"To arrive at 9:00 AM, you should catch the 8:00 AM train.",label:"target"}},
+        {name:"Target component", audio:"assets/qwen_omni/target/4.wav", response:null}
+      ]
+    },
+    {
+      id: "conflict-01",
+      sampleId: "test_006960",
+      title: "Conflict example 01",
+      difficulty: "Conflict",
+      speakers: 4,
+      sir: -4.49,
+      overlap: 0.8441,
+      rt60: 0.684,
+      noiseSnr: 14.57,
+      targetText: "is my alarm set for seven am",
+      interfererText: "i need a six am wakeup call",
+      backgroundTexts: ["get me an uber", "i had a great day today"],
+      enrollment: "assets/qwen_omni/reference/5.wav",
+      conditions: [
+        {name:"Mixture", audio:"assets/qwen_omni/mixture/5.wav", responseAudio:"assets/qwen_omni/omni_response/5_mixture.wav", response:{text:"[unintelligible speech]",label:"other"}},
+        {name:"OmniGATE-S", audio:"assets/qwen_omni/omniget_output_small/5.wav", responseAudio:"assets/qwen_omni/omni_response/5_small.wav", response:{text:"Yes, your alarm is set for 7:00 a.m.",label:"target"}},
+        {name:"OmniGATE-L", audio:"assets/qwen_omni/omnigate_output_large/5.wav", responseAudio:"assets/qwen_omni/omni_response/5_large.wav", response:{text:"Yes, your alarm is set for 7:00 a.m.",label:"target"}},
+        {name:"Target component", audio:"assets/qwen_omni/target/5.wav", response:null}
+      ]
+    },
+    {
+      id: "conflict-02",
+      sampleId: "test_005365",
+      title: "Conflict example 02",
+      difficulty: "Conflict",
+      speakers: 4,
+      sir: 8.55,
+      overlap: 0.9416,
+      rt60: 0.453,
+      noiseSnr: 0.12,
+      targetText: "turn the lights off in the bedroom",
+      interfererText: "turn off the kitchen lights",
+      backgroundTexts: ["call me a taxi olly", "find my next event and delete it please"],
+      enrollment: "assets/qwen_omni/reference/6.wav",
+      conditions: [
+        {name:"Mixture", audio:"assets/qwen_omni/mixture/6.wav", responseAudio:"assets/qwen_omni/omni_response/6_mixture.wav", response:{text:"Available meetings in March are what?",label:"interferer"}},
+        {name:"OmniGATE-S", audio:"assets/qwen_omni/omniget_output_small/6.wav", responseAudio:"assets/qwen_omni/omni_response/6_small.wav", response:{text:"Okay, turning off the lights in the main bedroom.",label:"target"}},
+        {name:"OmniGATE-L", audio:"assets/qwen_omni/omnigate_output_large/6.wav", responseAudio:"assets/qwen_omni/omni_response/6_large.wav", response:{text:"Okay, turning off the lights in the main bedroom.",label:"target"}},
+        {name:"Target component", audio:"assets/qwen_omni/target/6.wav", response:null}
+      ]
+    }
+  ],
+  bibtex: ""
+};
+
+const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
+function safePath(path){return typeof path==="string" && path.trim() && !/^(?:javascript|data|vbscript):/i.test(path.trim()) ? path.trim() : "";}
+function audio(path,label){const p=safePath(path);if(!p)return el("span","Audio unavailable","missing");const wrap=el("div");const a=el("audio");a.controls=true;a.preload="none";a.src=p;a.setAttribute("aria-label",label);a.addEventListener("error",()=>{a.hidden=true;wrap.append(el("span","Audio unavailable","missing"));},{once:true});wrap.append(a);return wrap;}
+function responseCell(condition,title){
+  const c=el("td",undefined,"response");
+  if(!condition.response){c.append(el("span","Acoustic reference only","missing"));return c;}
+  c.append(el("p",condition.response.text));
+  if(condition.responseAudio)c.append(audio(condition.responseAudio,title+" Qwen3-Omni response"));
+  return c;
+}
+function outcomeCell(condition){
+  const c=el("td");
+  if(!condition.response){c.append(el("span","—","missing"));return c;}
+  const labels={target:"Target",interferer:"Interferer",other:"Other"};
+  const label=condition.response.label;
+  c.append(el("span",labels[label]||"—","badge "+(labels[label]?label:"")));
+  return c;
+}
+const selectedExamples={};
+function renderInteraction(){
+  const root=document.getElementById("interaction-cases");
+  root.querySelectorAll("audio").forEach(a=>a.pause());
+  root.replaceChildren();
+  const groups=new Map();
+  for(const item of CONFIG.interactionCases){if(!groups.has(item.difficulty))groups.set(item.difficulty,[]);groups.get(item.difficulty).push(item);}
+  for(const [difficulty,cases] of groups){
+    const s=cases.find(item=>item.id===selectedExamples[difficulty])||cases[0];
+    const card=el("article",undefined,"case");
+    const head=el("div",undefined,"casehead");
+    const heading=el("div",undefined,"case-heading");
+    heading.append(el("h3",difficulty+" examples"));
+    const select=el("select",undefined,"example-select");
+    select.setAttribute("aria-label",difficulty+" example selection");
+    cases.forEach((item,index)=>{const option=el("option","Example "+(index+1));option.value=item.id;option.selected=item.id===s.id;select.append(option);});
+    select.addEventListener("change",()=>{selectedExamples[difficulty]=select.value;renderInteraction();});
+    heading.append(select);head.append(heading);
+    const meta=[s.title,s.sampleId,s.speakers+" speakers","Primary SIR: "+s.sir.toFixed(2)+" dB","Target overlap: "+(s.overlap*100).toFixed(0)+"%","RT60: "+s.rt60.toFixed(3)+" s","Noise SNR: "+s.noiseSnr.toFixed(2)+" dB"];
+    head.append(el("p",meta.join(" · "),"meta"));
+    card.append(head);
+
+    const prompts=el("div",undefined,"prompts");
+    const t=el("div");t.append(el("span","Target instruction","prompt-label"),el("span",s.targetText));
+    const i=el("div");i.append(el("span","Primary interfering instruction","prompt-label"),el("span",s.interfererText));
+    prompts.append(t,i);
+    if(s.backgroundTexts?.length){const b=el("div",undefined,"prompt-wide");b.append(el("span","Additional interfering speech","prompt-label"));const ul=el("ul",undefined,"background-list");s.backgroundTexts.forEach(x=>ul.append(el("li",x)));b.append(ul);prompts.append(b);}
+    const enrollment=el("div",undefined,"enrollment");enrollment.append(el("strong","Enrollment"),audio(s.enrollment,s.title+" enrollment"));
+    card.append(prompts,enrollment);
+
+    const wrap=el("div",undefined,"table-wrap"),table=el("table"),thead=el("thead"),tr=el("tr");
+    ["Condition","Speech audio","Qwen3-Omni response","Outcome"].forEach(text=>{const th=el("th",text);th.scope="col";tr.append(th);});
+    thead.append(tr);const body=el("tbody");
+    for(const condition of s.conditions){const row=el("tr"),speech=el("td");speech.append(audio(condition.audio,s.title+" "+condition.name));row.append(el("td",condition.name),speech,responseCell(condition,s.title+" "+condition.name),outcomeCell(condition));body.append(row);}
+    table.append(thead,body);wrap.append(table);card.append(wrap);root.append(card);
+  }
+}
+
+document.getElementById("authors").textContent=CONFIG.authors;
+document.getElementById("affiliations").textContent=CONFIG.affiliations;
+for(const [name,url] of Object.entries(CONFIG.links)){const p=safePath(url);if(p){const a=el("a",name,"link");a.href=p;a.target="_blank";a.rel="noopener noreferrer";document.getElementById("links").append(a);}else document.getElementById("links").append(el("span",name+" · coming soon","pending"));}
+document.getElementById("selection-note").textContent=CONFIG.selectionNote;
+renderInteraction();
+document.getElementById("citation-content").append(CONFIG.bibtex?el("pre",CONFIG.bibtex):el("p","Citation details will be added with the paper release.","muted"));
+document.addEventListener("play",e=>{if(e.target.matches("audio,video"))document.querySelectorAll("audio,video").forEach(a=>{if(a!==e.target)a.pause();});},true);
+</script>
+</body>
+</html>

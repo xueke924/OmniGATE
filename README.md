@@ -2,9 +2,32 @@
 
 **A Streaming Target Speaker Extraction Front-End for Omni-Modal Interaction**
 
-Ke Xue, Kai Li, Rongfei Fan, and Han Hu
+<h1 align="center">OmniGATE</h1>
 
-[![Demo Page](https://img.shields.io/badge/Demo-Listen%20%26%20Explore-165DB1?style=for-the-badge)](https://xueke924.github.io/OmniGATE/omnigate-demo/)
+<p align="center">
+  <strong>A Streaming Target Speaker Extraction Front-End for Omni-Modal Interaction</strong>
+</p>
+
+<br>
+
+<h2 align="center">
+  ➜&nbsp;&nbsp;
+  <a href="https://xueke924.github.io/OmniGATE/omnigate-demo/">
+    <img
+      src="https://img.shields.io/badge/DEMO-Listen%20%26%20Explore-165DB1?style=for-the-badge"
+      alt="Open OmniGATE Demo"
+      width="360"
+      align="center"
+    >
+  </a>
+  &nbsp;&nbsp;⬅
+</h2>
+
+<p align="center">
+  Listen to audio samples and explore target-aware interaction examples.
+</p>
+
+<br>
 
 ## Overview
 
